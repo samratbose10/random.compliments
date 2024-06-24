@@ -21,6 +21,22 @@ const compliments = [
     "You're a great listener."
 ];
 
+const backgrounds = [
+    'https://art.pixilart.com/de89b512f449f04.gif',
+    'https://art.pixilart.com/sr2eba8fc8f045c.gif',
+    'https://art.pixilart.com/166b340f1a20267.gif',
+    'https://art.pixilart.com/4439b4a9fd3fd38.gif'
+];
+
+let currentBackgroundIndex = 0;
+
+function changeBackground() {
+    currentBackgroundIndex = (currentBackgroundIndex + 1) % backgrounds.length;
+    document.body.style.backgroundImage = `url(${backgrounds[currentBackgroundIndex]})`;
+}
+
+setInterval(changeBackground, 9000);
+
 function generateCompliment() {
     const complimentElement = document.getElementById('compliment');
     const randomIndex = Math.floor(Math.random() * compliments.length);
@@ -34,16 +50,17 @@ function speakCompliment(compliment) {
     const voices = window.speechSynthesis.getVoices();
     const voice = voices.find(voice => voice.name.includes('Alex') || voice.name.includes('Daniel') || voice.name.includes('Fred')) || voices[0];
     utterance.voice = voice;
-    utterance.pitch = 0.6; // Deepens the voice
-    utterance.rate = 0.85; // Slows down the speaking rate
-    utterance.volume = 1; // Ensures voice is loud and clear
+    utterance.pitch = 0.6; 
+    utterance.rate = 0.85; 
+    utterance.volume = 1; 
 
-    // Lower background music volume when speaking
+    
     const audio = document.getElementById('background-music');
+    const originalVolume = audio.volume;
     audio.volume = 0.1;
 
     utterance.onend = () => {
-        audio.volume = audio.muted ? 0 : 0.5;
+        audio.volume = originalVolume;
     };
 
     window.speechSynthesis.speak(utterance);
@@ -69,6 +86,6 @@ $(document).on('click', '.toggle-sound', function(e) {
 });
 
 window.speechSynthesis.onvoiceschanged = () => {
-    // Preload voices
+    
     window.speechSynthesis.getVoices();
 };
